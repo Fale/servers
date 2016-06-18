@@ -1,0 +1,34 @@
+# This is read by the standalone daemon and embedded servers
+[server]
+
+# This is only for the mysqld standalone daemon
+[mysqld]
+
+# Galera-related settings
+[galera]
+wsrep_on=on
+wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+{% if groups.minions[0] == ansible_fqdn %}
+wsrep_cluster_address=gcomm://
+{% else %}
+wsrep_cluster_address=gcomm://{{ groups.minions | join(",") }}
+{% endif %}
+binlog_format=row
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+bind-address=0.0.0.0
+
+innodb_file_per_table
+wsrep_cluster_name=galera_cluster
+wsrep_node_address={{ ansible_eth1.ipv4.address }}
+wsrep_node_name={{ ansible_hostname }}
+log-bin={{ ansible_hostname }}
+
+# This is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB servers, not by MySQL.
+[mariadb]
+
+# This group is only read by MariaDB-10.1 servers.
+[mariadb-10.1]

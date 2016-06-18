@@ -1,0 +1,59 @@
+# Locati,cc
+#- name: Import certificate file
+#  include_vars: ../../keys/locati_cc.yml
+#  no_log: True
+
+#- name: Ensure the pem file is present
+#  copy:
+#    content: "{{ private_key_content }}" 
+#    dest: /etc/ssl/locati_cc.crt
+#    owner: znc
+#    group: znc
+#  become: True
+
+# Let's encrypt
+- name: Ensure letsencrypt is installed
+  yum:
+    name: letsencrypt
+    state: present
+  become: True
+
+- name: Ensure the /etc/letsencrypt folder exists
+  file:
+    name: /etc/letsencrypt
+    state: directory
+  become: True
+
+- name: Ensure the Lets Enctrypt config file is in place
+  copy:
+    src: cli.ini
+    dest: /etc/letsencrypt/cli.ini
+  become: True
+
+- name: Ensure we have the current version of the letsencrypt.conf file
+  copy:
+    src: acme.conf
+    dest: /etc/nginx/conf.d/acme.conf
+  become: True
+  register: leconf
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+  become: True
+  when: leconf.changed
+
+- name: Require the certificate for the FQDN
+  shell: letsencrypt --config /etc/letsencrypt/cli.ini -d {{ ansible_fqdn }} certonly
+  args:
+    creates: '/etc/letsencrypt/live/{{ ansible_fqdn }}/cert.pem'
+  become: True
+
+- name: Require the certificate for each service
+  shell: letsencrypt --config /etc/letsencrypt/cli.ini -d {{ item.url }} -d www.{{ item.url }} certonly
+  args:
+    creates: '/etc/letsencrypt/live/{{ item.url }}/cert.pem'
+  become: True
+  when: item.ssl == 'letsencrypt'
+  with_items: services

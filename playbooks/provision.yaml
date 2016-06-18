@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Import certificate file
+      include_vars: ../../keys/digitalocean.yaml
+      no_log: True
+    - name: Ensure kyle and the triba exist
+      digital_ocean:
+        state: present
+        ssh_key_ids: '1542321'
+        name: '{{ item }}'
+        api_token: '{{ digital_ocean_api_key }}'
+        size_id: 1gb
+        region_id: lon1
+        image_id: centos-7-0-x64
+        unique_name: True
+        #ipv6: True # Waiting for https://github.com/ansible/ansible-modules-core/pull/2579
+      with_items:
+        - host: kyle.locati.cc
+          region: lon1
+        - host: bob.locati.cc
+          region: lon1
+#        - host: kevin.locati.cc
+#          region: ams3
+#        - host: stuart.locati.cc
+#          region: fra1

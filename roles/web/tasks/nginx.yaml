@@ -1,0 +1,20 @@
+---
+- name: Obtain the list of spam referrals
+  uri:
+    url: 'https://raw.githubusercontent.com/piwik/referrer-spam-blacklist/master/spammers.txt'
+    return_content: True
+  register: spamlist
+
+- name: Ensure nginx configuration is updated
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/conf.d/configuration.conf
+  become: True
+  notify: Restart HTTPd
+
+- name: Start the nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: True
+  become: True

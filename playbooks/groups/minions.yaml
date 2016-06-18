@@ -1,0 +1,12 @@
+---
+- hosts: minions
+  user: ansible
+  roles:
+    - common
+    #- triba
+    #- glusterfs
+    #- dns
+    #- db
+    - web
+    #- email
+    #- xmpp

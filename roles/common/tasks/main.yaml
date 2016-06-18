@@ -1,0 +1,184 @@
+---
+# This role contains common plays that will run on all nodes.
+
+- name: Ensure EPEL and IUS are available
+  yum:
+    name: '{{ item }}'
+    state: present
+  become: True
+  with_items:
+    - 'epel-release'
+    - 'https://centos7.iuscommunity.org/ius-release.rpm'
+
+- name: Ensure IUS testing is enabled
+  lineinfile:
+    dest: /etc/yum.repos.d/ius-testing.repo
+    regexp: '^enabled=0'
+    line: 'enabled=1'
+  become: True
+
+- name: Install python bindings for SELinux
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: True
+  with_items:
+   - libselinux-python
+   - libsemanage-python
+
+- name: Upgrade all packages
+  yum:
+    name: "*"
+    state: latest
+  become: True
+
+- name: Ensure common software is available
+  yum:
+    name: '{{ item }}'
+    state: present
+  become: True
+  with_items:
+    - net-tools
+    - wget
+    - vim
+    - nmap
+    - rsync
+    - bind-utils
+    - tcpdump
+    - rxvt-unicode-256color-ml
+    - python-pip
+    - git
+
+# NTP
+- name: Ensure ntp is installed
+  yum:
+    name: ntp
+    state: present
+  become: True
+
+- name: Configure ntp file
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+  become: True
+  tags: ntp
+  notify: Restart ntp
+
+- name: Ensure the timezone is set to UTC
+  file:
+    src: /usr/share/zoneinfo/GMT
+    dest: /etc/localtime
+    state: link
+  become: True
+
+- name: Start the ntp service
+  service:
+    name: ntpd
+    state: started
+    enabled: True
+  become: True
+  tags: ntp
+
+# Firewlld
+- name: Ensure firewalld is installed
+  yum:
+    name: firewalld
+    state: present
+  become: True
+
+- name: Ensure firewalld is running
+  service:
+    name: firewalld
+    state: started
+    enabled: True
+  become: True
+
+# MOTD
+# Move to figlet
+- name: Add the motd file
+  template:
+    src: motd
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0644
+  become: True
+
+# SSH/Basic other stuff
+- name: Ensure SSH can pass the firewall
+  firewalld:
+    service: ssh
+    zone: public
+    state: enabled
+    permanent: True
+    immediate: True
+  become: True
+
+- name: Add group fale
+  group:
+    name: fale
+    state: present
+    gid: 2000
+  become: True
+
+- name: Add user fale
+  user:
+    name: fale
+    state: present
+    group: fale
+    groups: wheel
+    uid: 2000
+    comment: Fabio Alessandro Locati
+  become: True
+
+- name: Add authorized_key for fale
+  authorized_key:
+    user: fale
+    key: https://github.com/fale.keys
+  become: True
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: Restart sshd
+  become: True
+
+- name: Disallow password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: Restart sshd
+  become: True
+
+- hostname:
+    name: "{{ inventory_hostname }}"
+  become: True
+
+# From here it's a copy of playbooks/firstrun.yaml
+- name: Wheel group with no passowrd from sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel ALL\='
+    line: '%wheel ALL=(ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+  become: True
+
+- name: Add user ansible
+  user:
+    name: ansible
+    state: present
+    groups: wheel
+    comment: Ansible
+  become: True
+
+- name: Add authorized_key for ansible
+  authorized_key:
+    user: ansible
+    key: https://github.com/fale.keys
+  become: True

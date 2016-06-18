@@ -1,0 +1,52 @@
+---
+- name: Ensure basic programs are installed
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: True
+  with_items:
+    - nginx
+    - golang-bin
+    - mercurial
+
+- name: Ensure the golang path is set
+  lineinfile:
+    dest: '{{ item }}'
+    regexp: 'export GOPATH'
+    line: 'export GOPATH=$HOME/.go'
+  become: True
+  with_fileglob:
+    - '/home/*/.bashrc'
+
+- name: Ensure the users folders are browsable from other users
+  file:
+    path: '{{ item }}'
+    mode: 0711
+  become: True
+  with_fileglob:
+    - '/home/*/.bashrc'
+
+- name: Ensure HTTP and HTTPS traffic can pass the firewall
+  firewalld:
+    port: '{{ item }}'
+    zone: public
+    state: enabled
+    permanent: True
+    immediate: True
+  become: True
+  with_items:
+    - '80/tcp'
+    - '443/tcp'
+
+- name: Start the nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: True
+  become: True
+
+- include: certificates.yaml
+
+- include: nginx.yaml
+
+- include: deploy.yaml

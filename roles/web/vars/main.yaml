@@ -1,0 +1,20 @@
+---
+services:
+# Fale
+#  - url: fale.io
+#    user: fale
+#    ssl: letsencrypt
+#  - url: locati.cc
+#    user: fale
+#    ssl: file
+  - url: opensec.uk
+    user: fale
+    ssl: letsencrypt
+    repo: git@github.com:Fale/opensec.uk.git
+    repo_protocol: ssh
+# ViGLug
+#  - url: viglug.org
+#    user: viglug
+#    ssl: file
+#    aliases:
+#      - 'scopri-il-pinguino.viglug.org'

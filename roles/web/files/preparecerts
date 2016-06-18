@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Delete the /tmp/dhparam.pem if it's older than 12hrs and generate a
+# new one if it does not exists
+find /tmp/dhparam.pem -mmin +720 -delete > /dev/null
+if [ ! -f /tmp/dhparam.pem ]; then
+    openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096 > /dev/null
+fi
+
+# Regenerate the used certificates based on current upstreamfiles and
+# dhparams
+if [[ "${1}" == "letsencrypt" ]]; then
+    cat /etc/letsencrypt/live/${2}/privkey.pem > /etc/ssl/${2}.key
+    cat /etc/letsencrypt/live/${2}/chain.pem > /etc/ssl/${2}.pem
+    cat /etc/letsencrypt/live/${2}/cert.pem > /etc/ssl/${2}.crt
+    cat /tmp/dhparam.pem >> /etc/ssl/${2}.crt
+else
+    cat /etc/ssl/certs/${2}.key > /etc/ssl/${2}.key
+    cat /etc/ssl/cetts/${2}.pem > /etc/ssl/${2}.pem
+    cat /etc/ssl/certs/${2}.crt > /etc/ssl/${2}.crt
+    cat /tmp/dhparam.pem >> /etc/ssl/${2}.crt
+fi

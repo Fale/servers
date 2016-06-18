@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coming soon!</title>
+    <meta charset="UTF-8">
+    <style type="text/css" media="screen">
+      body {
+        margin: 0;
+        padding: 0;
+{% if dark is defined %}
+        background: #000000;
+{% else %}
+        background: #FFFFFF;
+{% endif %}
+      }
+      #cs {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        vertical-align: middle;
+        text-align: center;
+        margin-top: -45px;
+        font-size: 90px;
+        text-transform: uppercase;
+        font-weight: 900;
+{% if dark is defined %}
+        color: #999999;
+{% else %}
+        color: #CCCCCC;
+{% endif %}
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cs">Coming soon!</div>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+---
+- name: Ensure GlusterFS is installed
+  yum:
+    name: '{{ item }}'
+    state: installed
+  become: True
+  with_items:
+    - fuse-libs
+    - glusterfs-server
+    - glusterfs-client
+    - nfs-utils
+
+- name: Ensure GlusterFS can pass the firewall in the internal network
+  firewalld:
+    port: '{{ item }}'
+    zone: internal
+    state: enabled
+    permanent: True
+    immediate: True
+  become: True
+  with_items:
+    - '111/tcp'
+    - '111/udp'
+    - '2049/tcp'
+    - '24007/tcp'
+    - '38465-38467/tcp'
+    - '49152-49199/tcp'
+
+- name: Ensure the GlusterFS uses tcp
+  lineinfile:
+    dest: /etc/glusterfs/glusterd.vol
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+    insertbefore: 'end-volume'
+  register: glusterfs_options
+  become: True
+  with_items:
+    - regexp: 'option transport-type'
+      line: '    option transport-type tcp'
+
+- name: Restart GlusterFS if some config changed
+  service:
+    name: '{{ item }}'
+    state: restarted
+  become: True
+  when: glusterfs_options.changed
+  with_items:
+    - glusterd
+    - glusterfsd
+
+- name: Ensure GlusterFS is started and enabled at boot
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: True
+  become: True
+  with_items:
+    - glusterd
+    - glusterfsd
+
+- name: Ensure Gluster brick and mount directories exist
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  become: True
+  with_items:
+    - '/srv/gluster/bricks/home'
+    - '/home'
+
+- name: create gluster volume
+  gluster_volume:
+    state: present
+    name: home
+    brick: '/srv/gluster/bricks/home'
+    rebalance: True
+    cluster: '{{ groups.minions }}'
+    force: True
+    replicas: 3
+  run_once: True
+  become: True
+  when: groups.minions is defined
+
+- name: Start Gluster volume
+  gluster_volume:
+    name: 'home'
+    state: started
+  become: True
+
+- name: Ensure the Gluster volume is mounted
+  mount:
+    name: '/home'
+    src: '127.0.0.1:home'
+    fstype: glusterfs
+    opts: 'defaults,_netdev,fetch-attempts=10'
+    state: mounted
+  become: True
+
+- name: Ensure that every minute mount -a is runned
+  lineinfile:
+    dest: /etc/crontab
+    regexp: 'mount'
+    line: '  *  *  *  *  * root /bin/mount -a'
+  become: True

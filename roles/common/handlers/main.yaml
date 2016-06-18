@@ -1,0 +1,24 @@
+---
+- name: Restart ntp
+  service:
+    name: ntpd
+    state: restarted
+  become: True
+
+- name: Restart iptables
+  service:
+    name: iptables
+    state: restarted
+  become: True
+
+- name: Restart sshd
+  service:
+    name: sshd
+    state: restarted
+  become: True
+
+- name: Restart network
+  service:
+    name: network
+    state: restarted
+  become: True

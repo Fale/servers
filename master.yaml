@@ -1,0 +1,3 @@
+---
+- include: playbooks/groups/minions.yaml
+#- include: playbooks/hosts/kyle.yaml

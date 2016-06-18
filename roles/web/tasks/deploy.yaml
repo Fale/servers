@@ -1,0 +1,63 @@
+---
+- name: Ensure web users are available
+  user:
+    name: '{{ item.user }}'
+    state: present
+  become: True
+  with_items: services
+
+- name: Ensure git folder is present
+  file:
+    path: '/home/{{ item.user }}/git'
+    state: directory
+    mode: 0711
+  become: True
+  become_user: '{{ item.user }}'
+  with_items: services
+
+- name: Ensure DocumentRoot folders are available
+  file:
+    path: '/home/{{ item.user }}/public_html/{{ item.url }}'
+    state: directory
+    mode: 0711
+  become: True
+  become_user: '{{ item.user }}'
+  with_items: services
+
+- name: Ensure ErrorLog folders are available
+  file:
+    path: '/home/{{ item.user }}/logs/{{ item.url }}'
+    state: directory
+    mode: 0711
+  become: True
+  become_user: '{{ item.user }}'
+  with_items: services
+
+- name: Import certificate file
+  include_vars: ../../keys/server_key.yaml
+  no_log: True
+
+- name: Ensure the private key file is present
+  copy:
+    content: "{{ private_key_content }}"
+    dest: '/home/{{ item.user }}/.ssh/id_rsa'
+    mode: 0700
+  become: True
+  become_user: '{{ item.user }}'
+  when: item.repo_protocol == 'ssh'
+  with_items: services
+
+- name: Ensure git repo is present
+  git:
+    repo: '{{ item.repo }}'
+    dest: '/home/{{ item.user }}/git/{{ item.url }}'
+    accept_hostkey: True
+  become: True
+  become_user: '{{ item.user }}'
+  with_items: services
+
+- name: Regenerate websites
+  shell: '/home/{{ item.user }}/git/{{ item.url }}/deploy'
+  become: True
+  become_user: '{{ item.user }}'
+  with_items: services

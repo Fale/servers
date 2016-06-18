@@ -1,0 +1,23 @@
+---
+# This is a onetime script to be run on all nodes to create ansible user with sudo powers
+
+- hosts: all
+  user: root
+  tasks:
+  - name: Wheel group wuth no passowrd from sudoers
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel ALL\='
+      line: '%wheel ALL=(ALL) NOPASSWD:ALL'
+      validate: 'visudo -cf %s'
+  - name: Add user ansible
+    user:
+      name: ansible
+      state: present
+      groups: wheel
+      comment: Ansible
+  - name: Add authorized_key for ansible
+    authorized_key:
+      user: ansible
+      key: https://github.com/fale.keys
