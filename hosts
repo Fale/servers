@@ -1,7 +1,7 @@
 [minions]
-bob.locati.cc
-#kevin.locati.cc
-#stuart.locati.cc
+bob.fale.io
+kevin.fale.io
+stuart.fale.io
 
 [localhost]
 localhost ansible_connection=local
