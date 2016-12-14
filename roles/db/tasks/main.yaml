@@ -5,11 +5,8 @@
     state: installed
   become: True
   with_items:
-    - MariaDB-server
-    - MariaDB-client
-    - galera
+    - mariadb-server-galera
     - rsync
-    - lsof
 
 - name: Ensure MariaDB cluster is properly configured
   template:
