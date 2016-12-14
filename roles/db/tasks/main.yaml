@@ -32,7 +32,7 @@
 
 - name: Ensure MariaDB is running and enabled
   service:
-    name: mysql
+    name: mariadb
     state: started
     enabled: True
   become: True

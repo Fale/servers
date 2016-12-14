@@ -64,9 +64,12 @@
 # Firewlld
 - name: Ensure firewalld is installed
   package:
-    name: firewalld
+    name: '{{ item }}'
     state: present
   become: True
+  with_items:
+    - firewalld
+    - python-firewall
 
 - name: Ensure firewalld is running
   service:

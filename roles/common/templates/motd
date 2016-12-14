@@ -1,27 +1,27 @@
 
-                  ███████   █████   ██       ███████      ██   ██████
-                  ██       ██   ██  ██       ██           ██  ██    ██
-                  █████    ███████  ██       █████        ██  ██    ██
-                  ██       ██   ██  ██       ██           ██  ██    ██
-                  ██       ██   ██  ███████  ███████  ██  ██   ██████
+             ███████   █████   ██       ███████      ██   ██████
+             ██       ██   ██  ██       ██           ██  ██    ██
+             █████    ███████  ██       █████        ██  ██    ██
+             ██       ██   ██  ██       ██           ██  ██    ██
+             ██       ██   ██  ███████  ███████  ██  ██   ██████
 
 
-                            This system is managed by Ansible.
+                       This system is managed by Ansible.
  
-            OS            : {{ ansible_distribution }} {{ ansible_distribution_version }}
-            Hostname      : {{ inventory_hostname }}
+             OS            : {{ ansible_distribution }} {{ ansible_distribution_version }}
+             Hostname      : {{ inventory_hostname }}
 {% if ansible_eth0.ipv4 is defined %}
-            eth0 address  : {{ ansible_eth0.ipv4.address }}
+             eth0 address  : {{ ansible_eth0.ipv4.address }}
 {% else %}
-            eth0 address  : -
+             eth0 address  : -
 {% endif %}
 {% if ansible_eth1.ipv4 is defined %}
-            eth1 address  : {{ ansible_eth1.ipv4.address }}
+             eth1 address  : {{ ansible_eth1.ipv4.address }}
 {% else %}
-            eth1 address  : -
+             eth1 address  : -
 {% endif %}
 
-                       All connections are monitored and recorded
+                  All connections are monitored and recorded
 
-                 Disconnect IMMEDIATELY if you are not an authorized user!
+           Disconnect IMMEDIATELY if you are not an authorized user!
 

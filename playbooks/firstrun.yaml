@@ -6,7 +6,7 @@
   gather_facts: False
   tasks:
   - name: Install python 2
-    raw: dnf install -y python libselinux-python libsemanage-python
+    raw: dnf install -y python libselinux-python libsemanage-python python2-dnf
   - name: Wheel group with no password from sudoers
     lineinfile:
       dest: /etc/sudoers
