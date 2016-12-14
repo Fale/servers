@@ -1,6 +1,6 @@
 ---
 - name: Ensure basic programs are installed
-  yum:
+  package:
     name: '{{ item }}'
     state: present
   become: True

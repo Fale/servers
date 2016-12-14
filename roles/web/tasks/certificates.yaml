@@ -1,6 +1,6 @@
 # Let's encrypt
 - name: Ensure letsencrypt is installed
-  yum:
+  package:
     name: letsencrypt
     state: present
   become: True

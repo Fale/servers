@@ -1,6 +1,6 @@
 ---
 - name: Ensure GlusterFS is installed
-  yum:
+  package:
     name: '{{ item }}'
     state: installed
   become: True
