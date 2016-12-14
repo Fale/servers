@@ -1,25 +1,14 @@
 ---
-# This role contains common plays that will run on all nodes.
-
-- name: Ensure EPEL and IUS are available
+- name: Ensure EPEL is available on EL
   package:
-    name: '{{ item }}'
+    name: epel-release
     state: present
   become: True
-  with_items:
-    - 'epel-release'
-    - 'https://centos7.iuscommunity.org/ius-release.rpm'
-
-- name: Ensure IUS testing is enabled
-  lineinfile:
-    dest: /etc/yum.repos.d/ius-testing.repo
-    regexp: '^enabled=0'
-    line: 'enabled=1'
-  become: True
+  when: ansible_distribution == 'CentOS'
 
 - name: Install python bindings for SELinux
   package:
-    name: "{{ item }}"
+    name: '{{ item }}'
     state: present
   become: True
   with_items:
@@ -28,7 +17,7 @@
 
 - name: Upgrade all packages
   package:
-    name: "*"
+    name: '*'
     state: latest
   become: True
 
@@ -94,7 +83,6 @@
   become: True
 
 # MOTD
-# Move to figlet
 - name: Add the motd file
   template:
     src: motd
