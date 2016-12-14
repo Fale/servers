@@ -6,15 +6,6 @@
   become: True
   when: ansible_distribution == 'CentOS'
 
-- name: Install python bindings for SELinux
-  package:
-    name: '{{ item }}'
-    state: present
-  become: True
-  with_items:
-   - libselinux-python
-   - libsemanage-python
-
 - name: Upgrade all packages
   package:
     name: '*'
@@ -37,6 +28,8 @@
     - rxvt-unicode-256color-ml
     - python-pip
     - git
+    - libselinux-python
+    - libsemanage-python
 
 # NTP
 - name: Ensure ntp is installed
