@@ -1,7 +1,0 @@
----
-- hosts: kyle
-  user: ansible
-  roles:
-    - common
-    - irc
-    #- git
