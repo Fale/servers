@@ -67,14 +67,14 @@
     mode: 0775
   become: True
   with_items:
-    - '/srv/gluster/bricks/home'
-    - '/home'
+    - /srv/gluster/bricks/home
+    - /home
 
 - name: create gluster volume
   gluster_volume:
     state: present
     name: home
-    brick: '/srv/gluster/bricks/home'
+    brick: /srv/gluster/bricks/home
     rebalance: True
     cluster: '{{ groups.minions }}'
     force: True
@@ -85,14 +85,14 @@
 
 - name: Start Gluster volume
   gluster_volume:
-    name: 'home'
+    name: home
     state: started
   become: True
 
 - name: Ensure the Gluster volume is mounted
   mount:
-    name: '/home'
-    src: '127.0.0.1:home'
+    name: /home
+    src: 127.0.0.1:home
     fstype: glusterfs
     opts: 'defaults,_netdev,fetch-attempts=10'
     state: mounted
@@ -101,6 +101,6 @@
 - name: Ensure that every minute mount -a is runned
   lineinfile:
     dest: /etc/crontab
-    regexp: 'mount'
+    regexp: mount
     line: '  *  *  *  *  * root /bin/mount -a'
   become: True
