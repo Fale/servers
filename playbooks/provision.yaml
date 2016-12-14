@@ -9,7 +9,7 @@
     digital_ocean:
       state: present
       command: ssh
-      name: fale
+      name: fale@redhat.com
       ssh_pub_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDCQiNk2aenh+lRsEY9mV9774jK77TRlDyserwRvv12dHcof2okUOaF2YQH2MnTtgxakjaxxwqeI3di66osa95dhHsujhFueLkZpzteNsafaDE/Da4jC9sPmYSAlpS6VneHIzEqGAOTWjShMyKaMByg0i0Jdte/NJQbpvbSSb7wqDWx/ByzSNElxJO9HL+XL/ythHXI1NylQ3Fjr8dtFnXU3n8kp9/aIt9Kqzum27avQ0ePpS5YE2x7bXaFl2qHYvOxN/dVF8KdQfJP7vBX1Qv0s9b2SOP08+EQHmNetaYcHobo8GSWo5xBM51Ar1gBu+8ON72C6y4r0HdzCCGkteZeiIYEKFjkjISeDElywmir58WsZYtJiYVlwjSAVUrNWCjjJziMIrGw70Md+w/oFw2VEQQGJIMxTzIL8necRXBxLE5WMnRLRqHmh+vkkZOP6CnI1YU+jsT/FTW4/KMKZ8tszeCW7EDaTGCTy+skzMko++fDQDUEN3D2w+zByMP/UShf+lVp2XNYHYbsZIO6cR2HRJYEjtE9y+WWgrTS8TnFJWhNseScKIomOuaN0eJGjuuqGyMoaDoUA1zkuc103AW8UTVaWJW+8pZKgOltrYrfgLCQB6D7EEunPjYs9qaAh7Y02VJKbRcoBqSBlxajILVd2gdUQkQxIX9ynRxHDqmMuQ=='
       api_token: '{{ do_token_vault }}'
     register: ssh_key
