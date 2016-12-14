@@ -1,19 +1,4 @@
 ---
-- name: Enable MariaDB yum repository
-  copy:
-    src: MariaDB.repo
-    dest: /etc/yum.repos.d/MariaDB.repo
-    owner: root
-    group: root
-    mode: 0644
-  become: True
-
-- name: Import Percona GPG key
-  rpm_key:
-    key: 'https://yum.mariadb.org/RPM-GPG-KEY-MariaDB'
-    state: present
-  become: True
-
 - name: Ensure MariaDB is installed
   yum:
     name: '{{ item }}'

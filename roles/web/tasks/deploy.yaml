@@ -33,20 +33,6 @@
   become_user: '{{ item.user }}'
   with_items: services
 
-- name: Import certificate file
-  include_vars: ../../keys/server_key.yaml
-  no_log: True
-
-- name: Ensure the private key file is present
-  copy:
-    content: "{{ private_key_content }}"
-    dest: '/home/{{ item.user }}/.ssh/id_rsa'
-    mode: 0700
-  become: True
-  become_user: '{{ item.user }}'
-  when: item.repo_protocol == 'ssh'
-  with_items: services
-
 - name: Ensure git repo is present
   git:
     repo: '{{ item.repo }}'

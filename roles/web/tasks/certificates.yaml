@@ -1,16 +1,3 @@
-# Locati,cc
-#- name: Import certificate file
-#  include_vars: ../../keys/locati_cc.yml
-#  no_log: True
-
-#- name: Ensure the pem file is present
-#  copy:
-#    content: "{{ private_key_content }}" 
-#    dest: /etc/ssl/locati_cc.crt
-#    owner: znc
-#    group: znc
-#  become: True
-
 # Let's encrypt
 - name: Ensure letsencrypt is installed
   yum:
