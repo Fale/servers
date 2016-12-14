@@ -3,8 +3,11 @@
 
 - hosts: all
   user: root
+  gather_facts: False
   tasks:
-  - name: Wheel group wuth no passowrd from sudoers
+  - name: Install python 2
+    raw: dnf install -y python libselinux-python libsemanage-python
+  - name: Wheel group with no password from sudoers
     lineinfile:
       dest: /etc/sudoers
       state: present
@@ -17,7 +20,7 @@
       state: present
       groups: wheel
       comment: Ansible
-  - name: Add authorized_key for ansible
+  - name: Add authorized_key for Ansible
     authorized_key:
       user: ansible
       key: https://github.com/fale.keys
