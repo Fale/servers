@@ -38,14 +38,14 @@
       account_email: me@fale.io
       account_api_token: '{{ cf_token_vault }}'
     with_items: '{{ droplets.results }}'
-  - name: Ensure the app points to the right machines
-    cloudflare_dns:
-      zone: fale.io
-      type: A
-      value: '{{ item.droplet.ip_address }}'
-      ttl: 120
-      state: present
-      account_email: me@fale.io
-      account_api_token: '{{ cf_token_vault }}'
-    with_items: '{{ droplets.results }}'
-    when: "'{{ item.droplet.name }}' in groups['minions']"
+#  - name: Ensure the app points to the right machines
+#    cloudflare_dns:
+#      zone: fale.io
+#      type: A
+#      value: '{{ item.droplet.ip_address }}'
+#      ttl: 120
+#      state: present
+#      account_email: me@fale.io
+#      account_api_token: '{{ cf_token_vault }}'
+#    with_items: '{{ droplets.results }}'
+#    when: "'{{ item.droplet.name }}' in groups['minions']"

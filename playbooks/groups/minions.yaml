@@ -3,6 +3,6 @@
   user: ansible
   roles:
     - common
-    - db
     - glusterfs
+    #- db
     - web
