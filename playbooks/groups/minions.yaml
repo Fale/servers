@@ -2,7 +2,7 @@
 - hosts: minions
   user: ansible
   roles:
-    - common
+    #- common
     - glusterfs
     #- db
     - web

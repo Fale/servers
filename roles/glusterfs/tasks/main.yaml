@@ -29,14 +29,11 @@
 - name: Ensure the GlusterFS uses tcp
   lineinfile:
     dest: /etc/glusterfs/glusterd.vol
-    regexp: '{{ item.regexp }}'
-    line: '{{ item.line }}'
+    regexp: 'option transport-type'
+    line: '    option transport-type tcp'
     insertbefore: 'end-volume'
   register: glusterfs_options
   become: True
-  with_items:
-    - regexp: 'option transport-type'
-      line: '    option transport-type tcp'
 
 - name: Restart GlusterFS if some config changed
   service:
@@ -58,6 +55,16 @@
     - glusterd
     - glusterfsd
 
+- debug:
+    var: groups.minions
+
+- name: Connect to Gluster peers.
+  shell: 'gluster peer probe {{ item }}'
+  register: gluster_peer_probe
+  changed_when: "'already in peer list' not in gluster_peer_probe.stdout"
+  failed_when: false
+  with_items: '{{ groups.minions }}'
+
 - name: Ensure Gluster brick and mount directories exist
   file:
     path: '{{ item }}'
@@ -70,7 +77,7 @@
     - /srv/gluster/bricks/home
     - /home
 
-- name: create gluster volume
+- name: Ensure Gluster volume is present
   gluster_volume:
     state: present
     name: home
