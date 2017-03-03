@@ -31,6 +31,12 @@
   become: True
   when: leconf.changed
 
+- name: Ensure the /var/www/letsencrypt folder exists
+  file:
+    name: /var/www/letsencrypt
+    state: directory
+  become: True
+
 - name: Require the certificate for the FQDN
   shell: letsencrypt --config /etc/letsencrypt/cli.ini -d {{ ansible_fqdn }} certonly
   args:
@@ -42,5 +48,4 @@
   args:
     creates: '/etc/letsencrypt/live/{{ item.url }}/cert.pem'
   become: True
-  when: item.ssl == 'letsencrypt'
   with_items: services

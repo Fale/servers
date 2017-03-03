@@ -24,7 +24,7 @@
       image_id: fedora-25-x64
       unique_name: True
       private_networking: True
-    with_items: "{{ groups['all'] }}"
+    with_items: "{{ groups.all }}"
     register: droplets
   - name: Ensure domains resolve properly
     cloudflare_dns:
