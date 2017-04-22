@@ -19,15 +19,8 @@
   become: True
   with_items:
     - net-tools
-    - wget
     - vim
-    - nmap
-    - rsync
-    - bind-utils
-    - tcpdump
     - rxvt-unicode-256color-ml
-    - python-pip
-    - git
     - libselinux-python
     - libsemanage-python
 
@@ -79,7 +72,7 @@
   become: True
 
 # MOTD
-- name: Add the motd file
+- name: Ensure motd file is present
   template:
     src: motd
     dest: /etc/motd
@@ -148,7 +141,7 @@
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^%wheel ALL\='
+    regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD:ALL'
     validate: 'visudo -cf %s'
   become: True

@@ -1,0 +1,19 @@
+---
+- name: Ensure KVM packages are present
+  package:
+    name: '{{ item }}'
+    state: present
+  become: True
+  with_items:
+    - bridge-utils
+    - libvirt
+    - libvirt-daemon-kvm
+    - NetworkManager-glib
+    - qemu-kvm
+- name: Ensure that the network bridge is present
+  nmcli:
+    type: bridge
+    conn_name: br_int
+    ip4: '192.168.0.2'
+    gw4: '192.168.0.1'
+    state: present
