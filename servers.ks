@@ -18,8 +18,8 @@ clearpart --all --initlabel
 # Disk partitioning
 part raid.a1 --size=500 --ondisk=sda
 part raid.a2 --size=1   --ondisk=sda    --grow
-part raid.b1 --size=500 --ondisk=sda
-part raid.b2 --size=1   --ondisk=sda    --grow
+part raid.b1 --size=500 --ondisk=sdb
+part raid.b2 --size=1   --ondisk=sdb    --grow
 
 raid /boot --device=md0 --fstype="ext4" --level=RAID1 raid.a1 raid.b1
 raid pv.01 --device=md1 --level=RAID1 raid.a2 raid.b2
